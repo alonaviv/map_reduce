@@ -46,7 +46,7 @@ typedef std::list<v2Base *> V2_LIST;
 
 class MapReduceBase {
 public:
-    virtual void Map(const k1Base *const key, const v1Base *const val) const = 0;
+    virtual std::pair<k2Base, v2Base> Map(const k1Base *const key, const v1Base *const val) const = 0;
     virtual void Reduce(const k2Base *const key, const V2_LIST &vals) const = 0;
 };
 
