@@ -33,7 +33,6 @@ std::unique_ptr<MapResultQueue> execute_map(mapReduceBase& map_reduce_base,
     LOG(INFO) << "Finished loop. Now next batch index is " << next_batch_index.load();
     LOG(INFO) << "Ending execute_map ";
     return std::unique_ptr<MapResultQueue>(thread_map_result_queue);
-
 };
 
 OUT_ITEMS_LIST runMapReduceFramework(mapReduceBase &mapReduce, IN_ITEMS_LIST &itemsList, unsigned int multiThreadLevel)
