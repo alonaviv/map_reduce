@@ -7,31 +7,31 @@
 INITIALIZE_EASYLOGGINGPP
 
 std::unique_ptr<MapResultQueue> execute_map(mapReduceBase& map_reduce_base,
-                                            IN_ITEMS_LIST& input_vector,
-                                            std::atomic<unsigned int>& next_batch_index,
-                                            unsigned int batch_size)
+                                            const IN_ITEMS_LIST& input_vector,
+                                            std::atomic<size_t >& current_batch_start_index,
+                                            size_t batch_size)
 {
-    LOG(INFO) << "Starting execute_map ";
+    LOG(INFO) << "Starting map phase ";
+
     LOG(INFO) << "Creating queue";
     MapResultQueue* thread_map_result_queue = new MapResultQueue;
 
-    while(next_batch_index.load() < input_vector.size())
+    while(current_batch_start_index.load() < input_vector.size())
     {
-        LOG(INFO) << "In loop. next_batch_index=" << next_batch_index.load();
-        unsigned int current_index = next_batch_index.fetch_add(batch_size);
-        LOG(INFO) << "Got current index = " << current_index << ". Current vector size is " << input_vector.size();
-        if(current_index < input_vector.size())
+        size_t current_index = current_batch_start_index.fetch_add(batch_size);
+        size_t end_of_current_batch = current_index + batch_size < input_vector.size() - 1 ?
+                                      current_index + batch_size - 1 : input_vector.size() - 1;
+
+        for (current_index; current_index <= end_of_current_batch; current_index++)
         {
             auto &key = *(input_vector[current_index].first);
-            auto &value =  *(input_vector[current_index].second);
+            auto &value = *(input_vector[current_index].second);
             LOG(INFO) << "Running map function on key=" << key << ", value=" << value;
-            thread_map_result_queue -> emplace(map_reduce_base.Map(key, value));
-            LOG(INFO) << "Ran map. result is " << *(thread_map_result_queue->front().first) << " " <<
-                      *(thread_map_result_queue -> front().second);
+            thread_map_result_queue->emplace(map_reduce_base.Map(key, value));
         }
     }
-    LOG(INFO) << "Finished loop. Now next batch index is " << next_batch_index.load();
-    LOG(INFO) << "Ending execute_map ";
+
+    LOG(INFO) << "Finished map phase";
     return std::unique_ptr<MapResultQueue>(thread_map_result_queue);
 };
 

@@ -17,8 +17,8 @@ OUT_ITEMS_LIST runMapReduceFramework(mapReduceBase& mapReduce, IN_ITEMS_LIST& it
 typedef std::queue<MapResult> MapResultQueue;
 
 std::unique_ptr<MapResultQueue> execute_map(mapReduceBase& map_reduce_base,
-                                            IN_ITEMS_LIST& input_vector,
-                                            std::atomic<unsigned int>& next_batch_index,
-                                            unsigned int batch_size=10);
+                                            const IN_ITEMS_LIST& input_vector,
+                                            std::atomic<size_t >& current_batch_start_index,
+                                            size_t batch_size=10);
 
 #endif //MAPREDUCEFRAMEWORK_H

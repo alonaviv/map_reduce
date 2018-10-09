@@ -34,7 +34,8 @@ public:
 
 class v2Base {
 public:
-	virtual ~v2Base(){}
+	v2Base(){std::cout << "In v2Base ctor" << std::endl;}
+	virtual ~v2Base(){std::cout << "In v2Base dtor" << std::endl;}
     friend std::ostream& operator<<(std::ostream& os, const v2Base& other) {return other.print(os);}
     virtual std::ostream& print(std::ostream& os) const {os << "<v2Base>"; return os;};
 };

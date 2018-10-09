@@ -35,6 +35,8 @@ public:
     int value;
     explicit myV2(int value): value(value){};
     std::ostream& print(std::ostream& os) const override {os << "<V2: key=" << value << ">"; return os;}
+    ~myV2() override {std::cout << "Destructing myV2!" << std::endl;}
+    myV2(){std::cout << "Constructing myV2!" << std::endl;}
 };
 
 
